@@ -1,0 +1,71 @@
+﻿@page
+@model WebpageExample.Pages.GoodPayloadExampleModel
+@{
+
+}
+
+<div>
+    <button onclick="sendPayload()">Click and debug me</button>
+</div>
+
+<script>
+    function mockCompetencyCategory() {
+        let competencyCategories = [];
+
+        for (let i = 1; i <= 2; i++) {
+
+            let competencyCategoryObj = {
+                categoryName : "CategoryName " + i,
+                categoryLevel : "1"+i,
+                subCategories : [],
+            };
+
+            for (let j = 1; j <= 2; j++) {
+
+                let subCategoryObj = {
+                    subCategoryName : "SubCategoryName " + j,
+                    subCategoryLevel : "2"+j,
+                    competencies : [],
+                };
+
+                for (let k = 1; k <= 2; k++) {
+                    subCategoryObj.competencies.push(
+                        {
+                            competencyName : "Competency " + k,
+                            competencyLevel : "3"+k,
+                        }
+                    );
+                }
+
+                competencyCategoryObj.subCategories.push(subCategoryObj);
+            }
+
+            competencyCategories.push(competencyCategoryObj);
+        }
+
+        return competencyCategories;
+    }
+
+    function sendPayload() {
+        let competencies = mockCompetencyCategory();
+
+        let applicant = {
+            id : 1,
+            Name : "Hello",
+            address : "Address",
+            rightProperty : "RightProperty",
+            competencies : competencies
+        }
+
+        fetch("http://localhost:5267/api/user/Region1/create-applicant", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(applicant)
+        })
+            .then(response => response.json())
+            .then(result => console.log("Success:", result))
+            .catch(error => console.error("Error:", error));
+    }
+</script>
